@@ -1,0 +1,126 @@
+package vue;
+
+import modele.Desert;
+import modele.Joueur;
+import modele.Partie;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+public class VueDesert extends JFrame {
+    private Partie partie;
+    private JPanel grillePanel;
+    private JPanel[][] cases;
+    private JLabel statusLabel;
+    private JLabel joueurLabel;
+    private JButton finTourButton;
+
+    public VueDesert(Partie partie) {
+        this.partie = partie;
+        this.cases = new JPanel[Desert.TAILLE][Desert.TAILLE];
+
+        setTitle("Le Desert Interdit");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // grid panel
+        grillePanel = new JPanel(new GridLayout(Desert.TAILLE, Desert.TAILLE, 2, 2));
+        grillePanel.setBackground(Color.BLACK);
+        grillePanel.setPreferredSize(new Dimension(500, 500));
+
+        for (int i = 0; i < Desert.TAILLE; i++) {
+            for (int j = 0; j < Desert.TAILLE; j++) {
+                JPanel cell = new JPanel(new BorderLayout());
+                cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                cases[i][j] = cell;
+                grillePanel.add(cell);
+            }
+        }
+
+        // status panel
+        JPanel statusPanel = new JPanel(new GridLayout(3, 1));
+        statusLabel = new JLabel("Sable total: 0 | Tempete: 2");
+        joueurLabel = new JLabel("Tour: Joueur 1");
+        finTourButton = new JButton("Fin de Tour");
+
+        statusPanel.add(statusLabel);
+        statusPanel.add(joueurLabel);
+        statusPanel.add(finTourButton);
+
+        add(grillePanel, BorderLayout.CENTER);
+        add(statusPanel, BorderLayout.SOUTH);
+
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        mettreAJour();
+    }
+
+    public void mettreAJour() {
+        Desert desert = partie.getDesert();
+        List<Joueur> joueurs = partie.getJoueurs();
+
+        for (int i = 0; i < Desert.TAILLE; i++) {
+            for (int j = 0; j < Desert.TAILLE; j++) {
+                JPanel cell = cases[i][j];
+                cell.removeAll();
+
+                modele.Zone zone = desert.getZone(i, j);
+                String type = zone.getType();
+
+                // background color by type
+                switch (type) {
+                    case "oeil":
+                        cell.setBackground(Color.WHITE);
+                        break;
+                    case "crash":
+                        cell.setBackground(Color.ORANGE);
+                        break;
+                    case "oasis":
+                        cell.setBackground(Color.GREEN);
+                        break;
+                    default:
+                        cell.setBackground(new Color(194, 178, 128)); // sand color
+                }
+
+                // show sand count
+                JLabel sableLabel = new JLabel(String.valueOf(zone.getSable()), SwingConstants.CENTER);
+                sableLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                if (zone.isBloquee()) {
+                    cell.setBackground(Color.DARK_GRAY);
+                    sableLabel.setForeground(Color.WHITE);
+                }
+                cell.add(sableLabel, BorderLayout.CENTER);
+
+                // show players on this cell
+                for (Joueur joueur : joueurs) {
+                    if (joueur.getLigne() == i && joueur.getColonne() == joueur.getColonne()) {
+                        JLabel joueurIcon = new JLabel("★", SwingConstants.CENTER);
+                        joueurIcon.setForeground(Color.RED);
+                        joueurIcon.setFont(new Font("Arial", Font.BOLD, 16));
+                        cell.add(joueurIcon, BorderLayout.NORTH);
+                    }
+                }
+
+                cell.revalidate();
+                cell.repaint();
+            }
+        }
+
+        // update status
+        statusLabel.setText("Sable: " + desert.getTotalSable() + " | Tempete: " + desert.getNiveauTempete());
+        joueurLabel.setText("Tour: " + partie.getJoueurActuel().getNom() +
+                " | Eau: " + partie.getJoueurActuel().getEau() +
+                " | Actions: " + partie.getJoueurActuel().getActionsRestantes());
+
+        if (partie.isPartieTerminee()) {
+            String msg = partie.isVictoire() ? "VICTOIRE !" : "DEFAITE !";
+            JOptionPane.showMessageDialog(this, msg);
+        }
+    }
+
+    public JButton getFinTourButton() { return finTourButton; }
+    public JPanel[][] getCases() { return cases; }
+}
