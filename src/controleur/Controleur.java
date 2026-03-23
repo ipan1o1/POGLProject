@@ -5,15 +5,10 @@ import modele.Partie;
 import vue.VueDesert;
 
 import javax.swing.*;
+import java.awt.event.MouseEvent;
 
 public class Controleur {
-    private Partie partie;
-    private VueDesert vue;
-
     public Controleur(Partie partie, VueDesert vue) {
-        this.partie = partie;
-        this.vue = vue;
-
         // fin de tour button
         vue.getFinTourButton().addActionListener(e -> {
             partie.finDeTour();
@@ -22,7 +17,6 @@ public class Controleur {
 
         // click on cells to move player
         JPanel[][] cases = vue.getCases();
-        Joueur joueur = partie.getJoueurActuel();
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
@@ -30,15 +24,18 @@ public class Controleur {
                 final int fj = j;
                 cases[i][j].addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
-                    public void mouseClicked(java.awt.event.MouseEvent e) {
+                    public void mouseClicked(MouseEvent e) {
                         Joueur current = partie.getJoueurActuel();
                         int li = current.getLigne();
                         int col = current.getColonne();
+                        int dist = Math.abs(fi - li) + Math.abs(fj - col);
 
-                        // only allow adjacent moves
-                        boolean adjacent = (Math.abs(fi - li) + Math.abs(fj - col)) == 1;
-                        if (adjacent) {
+                        if (SwingUtilities.isLeftMouseButton(e) && dist == 1) {
+                            // left click = move to adjacent zone
                             current.deplacer(fi, fj, partie.getDesert());
+                        } else if (SwingUtilities.isRightMouseButton(e) && dist <= 1) {
+                            // right click = dig current or adjacent zone
+                            current.creuser(fi, fj, partie.getDesert());
                         }
                         vue.mettreAJour();
                     }
