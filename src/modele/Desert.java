@@ -48,6 +48,18 @@ public class Desert {
         return totalSable > 43 || niveauTempete >= 7;
     }
 
+    public void augmenterTempete() {
+        niveauTempete++;
+    }
+
+    public void deplacerOeil(int oi, int oj, int ni, int nj) {
+        grille[oi][oj] = new Zone("normale");
+        grille[ni][nj] = new Zone("oeil");
+        ajouterSable(oi, oj);
+        oeil[0] = ni;
+        oeil[1] = nj;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
