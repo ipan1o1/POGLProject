@@ -23,7 +23,6 @@ public class Desert {
             }
         }
         grille[2][2] = new Zone("oeil");
-        grille[0][2] = new Zone("crash");
     }
 
     private void placerSableInitial() {

@@ -96,7 +96,7 @@ public class VueDesert extends JFrame {
 
                 // show players on this cell
                 for (Joueur joueur : joueurs) {
-                    if (joueur.getLigne() == i && joueur.getColonne() == joueur.getColonne()) {
+                    if (joueur.getLigne() == i && joueur.getColonne() == j) {
                         JLabel joueurIcon = new JLabel("★", SwingConstants.CENTER);
                         joueurIcon.setForeground(Color.RED);
                         joueurIcon.setFont(new Font("Arial", Font.BOLD, 16));
