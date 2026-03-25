@@ -16,6 +16,11 @@ public class Desert {
         placerSableInitial();
     }
 
+    // fixed positions for special zones
+    public static final int[][] POSITIONS_OASIS   = {{0,0}, {4,4}};
+    public static final int[]   POSITION_MIRAGE   = {4,0};
+    public static final int[][] POSITIONS_TUNNELS = {{0,4}, {2,1}, {4,3}};
+
     private void initialiserGrille() {
         for (int i = 0; i < TAILLE; i++) {
             for (int j = 0; j < TAILLE; j++) {
@@ -23,6 +28,9 @@ public class Desert {
             }
         }
         grille[2][2] = new Zone("oeil");
+        for (int[] pos : POSITIONS_OASIS)  grille[pos[0]][pos[1]] = new Zone("oasis");
+        grille[POSITION_MIRAGE[0]][POSITION_MIRAGE[1]] = new Zone("mirage");
+        for (int[] pos : POSITIONS_TUNNELS) grille[pos[0]][pos[1]] = new Zone("tunnel");
     }
 
     private void placerSableInitial() {

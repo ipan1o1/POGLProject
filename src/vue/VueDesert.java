@@ -15,6 +15,7 @@ public class VueDesert extends JFrame {
     private JLabel statusLabel;
     private JLabel joueurLabel;
     private JButton finTourButton;
+    private JPanel eauPanel;
 
     public VueDesert(Partie partie) {
         this.partie = partie;
@@ -38,7 +39,7 @@ public class VueDesert extends JFrame {
             }
         }
 
-        // status panel
+        // status panel (south)
         JPanel statusPanel = new JPanel(new GridLayout(3, 1));
         statusLabel = new JLabel("Sable total: 0 | Tempete: 2");
         joueurLabel = new JLabel("Tour: Joueur 1");
@@ -48,8 +49,15 @@ public class VueDesert extends JFrame {
         statusPanel.add(joueurLabel);
         statusPanel.add(finTourButton);
 
+        // water panel (east) — one row per player
+        eauPanel = new JPanel();
+        eauPanel.setLayout(new BoxLayout(eauPanel, BoxLayout.Y_AXIS));
+        eauPanel.setBorder(BorderFactory.createTitledBorder("Eau"));
+        eauPanel.setPreferredSize(new Dimension(140, 0));
+
         add(grillePanel, BorderLayout.CENTER);
         add(statusPanel, BorderLayout.SOUTH);
+        add(eauPanel, BorderLayout.EAST);
 
         pack();
         setLocationRelativeTo(null);
@@ -75,11 +83,17 @@ public class VueDesert extends JFrame {
                     case "oeil":
                         cell.setBackground(Color.WHITE);
                         break;
-                    case "crash":
-                        cell.setBackground(Color.ORANGE);
-                        break;
                     case "oasis":
                         cell.setBackground(Color.GREEN);
+                        break;
+                    case "mirage":
+                        // looks like oasis until explored, then plain sand
+                        cell.setBackground(zone.isExploree()
+                                ? new Color(194, 178, 128)
+                                : Color.GREEN);
+                        break;
+                    case "tunnel":
+                        cell.setBackground(new Color(100, 200, 255)); // light blue
                         break;
                     default:
                         cell.setBackground(new Color(194, 178, 128)); // sand color
@@ -109,11 +123,21 @@ public class VueDesert extends JFrame {
             }
         }
 
-        // update status
+        // update status bar
         statusLabel.setText("Sable: " + desert.getTotalSable() + " | Tempete: " + desert.getNiveauTempete());
         joueurLabel.setText("Tour: " + partie.getJoueurActuel().getNom() +
-                " | Eau: " + partie.getJoueurActuel().getEau() +
                 " | Actions: " + partie.getJoueurActuel().getActionsRestantes());
+
+        // refresh water panel
+        eauPanel.removeAll();
+        for (Joueur joueur : joueurs) {
+            String gouttes = "💧".repeat(joueur.getEau()) + "🩶".repeat(Joueur.EAU_MAX - joueur.getEau());
+            JLabel label = new JLabel("<html><b>" + joueur.getNom() + "</b><br>" + gouttes + "</html>");
+            label.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+            eauPanel.add(label);
+        }
+        eauPanel.revalidate();
+        eauPanel.repaint();
 
         if (partie.isPartieTerminee()) {
             String msg = partie.isVictoire() ? "VICTOIRE !" : "DEFAITE !";

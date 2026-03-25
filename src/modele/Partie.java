@@ -95,7 +95,29 @@ public class Partie {
 
     private void vagueDeChaleur() {
         for (Joueur j : joueurs) {
-            j.boire();
+            // players in a tunnel are immune to heatwaves
+            Zone zone = desert.getZone(j.getLigne(), j.getColonne());
+            if (!zone.getType().equals("tunnel")) {
+                j.boire();
+            }
+        }
+    }
+
+    // Explorer action triggered from the controller
+    public void explorer() {
+        Joueur current = getJoueurActuel();
+        int li = current.getLigne();
+        int col = current.getColonne();
+        if (current.explorer(li, col, desert)) {
+            Zone zone = desert.getZone(li, col);
+            // real oasis gives +2 water to all players on that zone
+            if (zone.getType().equals("oasis")) {
+                for (Joueur j : joueurs) {
+                    if (j.getLigne() == li && j.getColonne() == col) {
+                        j.remplir(2);
+                    }
+                }
+            }
         }
     }
 

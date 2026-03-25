@@ -4,7 +4,11 @@ import modele.Joueur;
 import modele.Partie;
 import vue.VueDesert;
 
+import modele.Desert;
+import modele.Zone;
+
 import javax.swing.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class Controleur {
@@ -29,18 +33,42 @@ public class Controleur {
                         int li = current.getLigne();
                         int col = current.getColonne();
                         int dist = Math.abs(fi - li) + Math.abs(fj - col);
+                        Desert desert = partie.getDesert();
+                        Zone zoneCourante = desert.getZone(li, col);
+                        Zone zoneCible   = desert.getZone(fi, fj);
 
-                        if (SwingUtilities.isLeftMouseButton(e) && dist == 1) {
-                            // left click = move to adjacent zone
-                            current.deplacer(fi, fj, partie.getDesert());
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            if (dist == 1) {
+                                // normal move to adjacent zone
+                                current.deplacer(fi, fj, desert);
+                            } else if (zoneCourante.getType().equals("tunnel")
+                                    && zoneCible.getType().equals("tunnel")
+                                    && dist > 1) {
+                                // tunnel teleport: costs 2 actions
+                                if (current.getActionsRestantes() >= 2
+                                        && current.deplacer(fi, fj, desert)) {
+                                    current.consommerAction(); // consume 2nd action
+                                }
+                            }
                         } else if (SwingUtilities.isRightMouseButton(e) && dist <= 1) {
                             // right click = dig current or adjacent zone
-                            current.creuser(fi, fj, partie.getDesert());
+                            current.creuser(fi, fj, desert);
                         }
                         vue.mettreAJour();
                     }
                 });
             }
         }
+
+        // E key = explore current zone
+        vue.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "explorer");
+        vue.getRootPane().getActionMap().put("explorer", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                partie.explorer();
+                vue.mettreAJour();
+            }
+        });
     }
 }

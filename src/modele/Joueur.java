@@ -41,7 +41,23 @@ public class Joueur {
         if (eau > 0) eau--;
     }
 
+    public void remplir(int quantite) {
+        eau = Math.min(EAU_MAX, eau + quantite);
+    }
+
+    // Explorer action — marks zone as explored, costs 1 action
+    public boolean explorer(int i, int j, Desert desert) {
+        if (actionsRestantes <= 0) return false;
+        desert.getZone(i, j).explorer();
+        actionsRestantes--;
+        return true;
+    }
+
     public boolean estMort() { return eau <= 0; }
+
+    public void consommerAction() {
+        if (actionsRestantes > 0) actionsRestantes--;
+    }
 
     public void resetActions() { actionsRestantes = ACTIONS_MAX; }
 
