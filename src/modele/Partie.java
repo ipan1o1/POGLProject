@@ -108,6 +108,7 @@ public class Partie {
         Joueur current = getJoueurActuel();
         int li = current.getLigne();
         int col = current.getColonne();
+        if (desert.getZone(li, col).isExploree()) return;
         if (current.explorer(li, col, desert)) {
             Zone zone = desert.getZone(li, col);
             // real oasis gives +2 water to all players on that zone
