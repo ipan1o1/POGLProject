@@ -80,23 +80,14 @@ public class VueDesert extends JFrame {
 
                 // background color by type
                 switch (type) {
-                    case "oeil":
-                        cell.setBackground(Color.WHITE);
-                        break;
-                    case "oasis":
-                        cell.setBackground(Color.GREEN);
-                        break;
-                    case "mirage":
-                        // looks like oasis until explored, then plain sand
-                        cell.setBackground(zone.isExploree()
-                                ? new Color(194, 178, 128)
-                                : Color.GREEN);
-                        break;
-                    case "tunnel":
-                        cell.setBackground(new Color(100, 200, 255)); // light blue
-                        break;
-                    default:
-                        cell.setBackground(new Color(194, 178, 128)); // sand color
+                    case "oeil":      cell.setBackground(Color.WHITE); break;
+                    case "oasis":     cell.setBackground(Color.GREEN); break;
+                    case "mirage":    cell.setBackground(zone.isExploree() ? new Color(194, 178, 128) : Color.GREEN); break;
+                    case "tunnel":    cell.setBackground(new Color(100, 200, 255)); break;
+                    case "crash":     cell.setBackground(Color.ORANGE); break;
+                    case "decollage": cell.setBackground(new Color(255, 215, 0)); break; // gold
+                    case "indice":    cell.setBackground(new Color(200, 160, 255)); break; // purple
+                    default:          cell.setBackground(new Color(194, 178, 128));
                 }
 
                 // show sand count
@@ -107,6 +98,14 @@ public class VueDesert extends JFrame {
                     sableLabel.setForeground(Color.WHITE);
                 }
                 cell.add(sableLabel, BorderLayout.CENTER);
+
+                // show revealed piece on this cell
+                if (zone.hasPiece() && zone.isPieceRevlee()) {
+                    JLabel pieceLabel = new JLabel("⚙", SwingConstants.CENTER);
+                    pieceLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                    pieceLabel.setForeground(new Color(180, 60, 0));
+                    cell.add(pieceLabel, BorderLayout.SOUTH);
+                }
 
                 // show players on this cell
                 for (Joueur joueur : joueurs) {
@@ -132,7 +131,8 @@ public class VueDesert extends JFrame {
         eauPanel.removeAll();
         for (Joueur joueur : joueurs) {
             String gouttes = "💧".repeat(joueur.getEau()) + "🩶".repeat(Joueur.EAU_MAX - joueur.getEau());
-            JLabel label = new JLabel("<html><b>" + joueur.getNom() + "</b><br>" + gouttes + "</html>");
+            String inv = joueur.getInventaire().isEmpty() ? "" : "<br>⚙ " + String.join(", ", joueur.getInventaire());
+            JLabel label = new JLabel("<html><b>" + joueur.getNom() + "</b><br>" + gouttes + inv + "</html>");
             label.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
             eauPanel.add(label);
         }

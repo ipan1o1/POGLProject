@@ -36,6 +36,10 @@ public class Partie {
             declencherActionDesert();
         }
 
+        // check win condition
+        verifierVictoire();
+        if (partieTerminee) return;
+
         // check lose conditions
         if (desert.isPerdu()) {
             partieTerminee = true;
@@ -111,14 +115,33 @@ public class Partie {
         if (desert.getZone(li, col).isExploree()) return;
         if (current.explorer(li, col, desert)) {
             Zone zone = desert.getZone(li, col);
-            // real oasis gives +2 water to all players on that zone
             if (zone.getType().equals("oasis")) {
                 for (Joueur j : joueurs) {
                     if (j.getLigne() == li && j.getColonne() == col) {
                         j.remplir(2);
                     }
                 }
+            } else if (zone.getType().equals("indice")) {
+                desert.revelerPieceDepuis(li, col);
             }
+        }
+    }
+
+    public void ramasser() {
+        getJoueurActuel().ramasser(desert);
+    }
+
+    public void verifierVictoire() {
+        if (partieTerminee) return;
+        Zone dec = desert.getZone(Desert.POSITION_DECOLLAGE[0], Desert.POSITION_DECOLLAGE[1]);
+        if (dec.getSable() > 0) return;
+        for (Joueur j : joueurs) {
+            if (j.getLigne() != Desert.POSITION_DECOLLAGE[0] || j.getColonne() != Desert.POSITION_DECOLLAGE[1]) return;
+        }
+        int totalPieces = joueurs.stream().mapToInt(j -> j.getInventaire().size()).sum();
+        if (totalPieces == 4) {
+            partieTerminee = true;
+            victoire = true;
         }
     }
 

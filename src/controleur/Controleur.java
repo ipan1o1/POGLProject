@@ -54,6 +54,7 @@ public class Controleur {
                             // right click = dig current or adjacent zone
                             current.creuser(fi, fj, desert);
                         }
+                        partie.verifierVictoire();
                         vue.mettreAJour();
                     }
                 });
@@ -67,6 +68,19 @@ public class Controleur {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 partie.explorer();
+                partie.verifierVictoire();
+                vue.mettreAJour();
+            }
+        });
+
+        // F key = pick up machine part on current tile
+        vue.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), "ramasser");
+        vue.getRootPane().getActionMap().put("ramasser", new AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                partie.ramasser();
+                partie.verifierVictoire();
                 vue.mettreAJour();
             }
         });

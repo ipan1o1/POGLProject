@@ -1,11 +1,15 @@
 package modele;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Joueur {
     private int ligne;
     private int colonne;
     private int eau;
     private int actionsRestantes;
     private String nom;
+    private List<String> inventaire;
 
     public static final int EAU_MAX = 5;
     public static final int ACTIONS_MAX = 4;
@@ -16,6 +20,7 @@ public class Joueur {
         this.colonne = colonne;
         this.eau = EAU_MAX;
         this.actionsRestantes = ACTIONS_MAX;
+        this.inventaire = new ArrayList<>();
     }
 
     // Movement
@@ -54,6 +59,17 @@ public class Joueur {
     }
 
     public boolean estMort() { return eau <= 0; }
+
+    public boolean ramasser(Desert desert) {
+        if (actionsRestantes <= 0) return false;
+        Zone zone = desert.getZone(ligne, colonne);
+        if (!zone.hasPiece() || !zone.isPieceRevlee()) return false;
+        inventaire.add(zone.ramasserPiece());
+        actionsRestantes--;
+        return true;
+    }
+
+    public List<String> getInventaire() { return inventaire; }
 
     public void consommerAction() {
         if (actionsRestantes > 0) actionsRestantes--;
