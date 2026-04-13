@@ -20,27 +20,22 @@ public class Partie {
         this.victoire = false;
         this.random = new Random();
 
-        // all players start at crash site (0,2)
         for (int i = 0; i < nbJoueurs; i++) {
             joueurs.add(new Joueur("Joueur " + (i + 1), 0, 2));
         }
     }
 
     public void finDeTour() {
-        // reset current player actions
         joueurs.get(joueurActuel).resetActions();
 
-        // trigger desert actions
         int nbActions = (int) desert.getNiveauTempete();
         for (int i = 0; i < nbActions; i++) {
             declencherActionDesert();
         }
 
-        // check win condition
         verifierVictoire();
         if (partieTerminee) return;
 
-        // check lose conditions
         if (desert.isPerdu()) {
             partieTerminee = true;
             victoire = false;
@@ -55,14 +50,13 @@ public class Partie {
             }
         }
 
-        // next player's turn
         joueurActuel = (joueurActuel + 1) % joueurs.size();
     }
 
     private void declencherActionDesert() {
         int action = random.nextInt(3);
         switch (action) {
-            case 0: // wind
+            case 0: 
                 String[] directions = {"N", "S", "E", "O"};
                 String dir = directions[random.nextInt(4)];
                 int force = random.nextInt(3) + 1;
@@ -99,7 +93,6 @@ public class Partie {
 
     private void vagueDeChaleur() {
         for (Joueur j : joueurs) {
-            // players in a tunnel are immune to heatwaves
             Zone zone = desert.getZone(j.getLigne(), j.getColonne());
             if (!zone.getType().equals("tunnel")) {
                 j.boire();
@@ -107,7 +100,6 @@ public class Partie {
         }
     }
 
-    // Explorer action triggered from the controller
     public void explorer() {
         Joueur current = getJoueurActuel();
         int li = current.getLigne();

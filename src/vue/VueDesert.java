@@ -1,12 +1,11 @@
 package vue;
 
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
 import modele.Desert;
 import modele.Joueur;
 import modele.Partie;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 
 public class VueDesert extends JFrame {
     private Partie partie;
@@ -25,7 +24,7 @@ public class VueDesert extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // grid panel
+        // grid
         grillePanel = new JPanel(new GridLayout(Desert.TAILLE, Desert.TAILLE, 2, 2));
         grillePanel.setBackground(Color.BLACK);
         grillePanel.setPreferredSize(new Dimension(500, 500));
@@ -39,7 +38,6 @@ public class VueDesert extends JFrame {
             }
         }
 
-        // status panel (south)
         JPanel statusPanel = new JPanel(new GridLayout(3, 1));
         statusLabel = new JLabel("Sable total: 0 | Tempete: 2");
         joueurLabel = new JLabel("Tour: Joueur 1");
@@ -49,7 +47,7 @@ public class VueDesert extends JFrame {
         statusPanel.add(joueurLabel);
         statusPanel.add(finTourButton);
 
-        // water panel (east) — one row per player
+        // water 
         eauPanel = new JPanel();
         eauPanel.setLayout(new BoxLayout(eauPanel, BoxLayout.Y_AXIS));
         eauPanel.setBorder(BorderFactory.createTitledBorder("Eau"));
@@ -78,7 +76,7 @@ public class VueDesert extends JFrame {
                 modele.Zone zone = desert.getZone(i, j);
                 String type = zone.getType();
 
-                // background color by type
+             
                 switch (type) {
                     case "oeil":      cell.setBackground(Color.WHITE); break;
                     case "oasis":     cell.setBackground(Color.GREEN); break;
@@ -90,7 +88,7 @@ public class VueDesert extends JFrame {
                     default:          cell.setBackground(new Color(194, 178, 128));
                 }
 
-                // show sand count
+                // sand
                 JLabel sableLabel = new JLabel(String.valueOf(zone.getSable()), SwingConstants.CENTER);
                 sableLabel.setFont(new Font("Arial", Font.BOLD, 14));
                 if (zone.isBloquee()) {
@@ -99,7 +97,7 @@ public class VueDesert extends JFrame {
                 }
                 cell.add(sableLabel, BorderLayout.CENTER);
 
-                // show revealed piece on this cell
+                // revealed piece 
                 if (zone.hasPiece() && zone.isPieceRevlee()) {
                     JLabel pieceLabel = new JLabel("⚙", SwingConstants.CENTER);
                     pieceLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -107,7 +105,7 @@ public class VueDesert extends JFrame {
                     cell.add(pieceLabel, BorderLayout.SOUTH);
                 }
 
-                // show players on this cell
+                // show players
                 for (Joueur joueur : joueurs) {
                     if (joueur.getLigne() == i && joueur.getColonne() == j) {
                         JLabel joueurIcon = new JLabel("★", SwingConstants.CENTER);
@@ -122,12 +120,12 @@ public class VueDesert extends JFrame {
             }
         }
 
-        // update status bar
+        // update bars
         statusLabel.setText("Sable: " + desert.getTotalSable() + " | Tempete: " + desert.getNiveauTempete());
         joueurLabel.setText("Tour: " + partie.getJoueurActuel().getNom() +
                 " | Actions: " + partie.getJoueurActuel().getActionsRestantes());
 
-        // refresh water panel
+        // refresh water
         eauPanel.removeAll();
         for (Joueur joueur : joueurs) {
             String gouttes = "💧".repeat(joueur.getEau()) + "🩶".repeat(Joueur.EAU_MAX - joueur.getEau());

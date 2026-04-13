@@ -1,25 +1,21 @@
 package controleur;
 
-import modele.Joueur;
-import modele.Partie;
-import vue.VueDesert;
-
-import modele.Desert;
-import modele.Zone;
-
-import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.*;
+import modele.Desert;
+import modele.Joueur;
+import modele.Partie;
+import modele.Zone;
+import vue.VueDesert;
 
 public class Controleur {
     public Controleur(Partie partie, VueDesert vue) {
-        // fin de tour button
         vue.getFinTourButton().addActionListener(e -> {
             partie.finDeTour();
             vue.mettreAJour();
         });
 
-        // click on cells to move player
         JPanel[][] cases = vue.getCases();
 
         for (int i = 0; i < 5; i++) {
@@ -39,19 +35,17 @@ public class Controleur {
 
                         if (SwingUtilities.isLeftMouseButton(e)) {
                             if (dist == 1) {
-                                // normal move to adjacent zone
                                 current.deplacer(fi, fj, desert);
                             } else if (zoneCourante.getType().equals("tunnel")
                                     && zoneCible.getType().equals("tunnel")
                                     && dist > 1) {
-                                // tunnel teleport: costs 2 actions
                                 if (current.getActionsRestantes() >= 2
                                         && current.deplacer(fi, fj, desert)) {
-                                    current.consommerAction(); // consume 2nd action
+                                    current.consommerAction(); 
                                 }
                             }
                         } else if (SwingUtilities.isRightMouseButton(e) && dist <= 1) {
-                            // right click = dig current or adjacent zone
+                            // right click = dig 
                             current.creuser(fi, fj, desert);
                         }
                         partie.verifierVictoire();
@@ -61,7 +55,7 @@ public class Controleur {
             }
         }
 
-        // E key = explore current zone
+        // E = explore 
         vue.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "explorer");
         vue.getRootPane().getActionMap().put("explorer", new AbstractAction() {
@@ -73,7 +67,7 @@ public class Controleur {
             }
         });
 
-        // F key = pick up machine part on current tile
+        // F = pick up 
         vue.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), "ramasser");
         vue.getRootPane().getActionMap().put("ramasser", new AbstractAction() {

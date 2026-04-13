@@ -3,7 +3,7 @@ package modele;
 public class Desert {
     public static final int TAILLE = 5;
     private Zone[][] grille;
-    private int[] oeil; // position of storm eye [row, col]
+    private int[] oeil; 
     private int niveauTempete;
     private int totalSable;
 
@@ -11,19 +11,19 @@ public class Desert {
         grille = new Zone[TAILLE][TAILLE];
         niveauTempete = 2;
         totalSable = 0;
-        oeil = new int[]{2, 2}; // center of grid
+        oeil = new int[]{2, 2}; 
         initialiserGrille();
         placerSableInitial();
     }
 
-    // fixed positions for special zones
+   
     public static final int[][] POSITIONS_OASIS   = {{0,0}, {4,4}};
     public static final int[]   POSITION_MIRAGE   = {4,0};
     public static final int[][] POSITIONS_TUNNELS = {{0,4}, {2,1}, {4,3}};
     public static final int[]   POSITION_CRASH    = {0, 2};
     public static final int[]   POSITION_DECOLLAGE = {4, 2};
 
-    // each row: { indice pos, piece pos, piece name }
+   
     private static final Object[][] INDICES = {
         {new int[]{1, 0}, new int[]{3, 4}, "Hélice"},
         {new int[]{1, 4}, new int[]{3, 0}, "Moteur"},
@@ -44,15 +44,14 @@ public class Desert {
         grille[POSITION_CRASH[0]][POSITION_CRASH[1]]       = new Zone("crash");
         grille[POSITION_DECOLLAGE[0]][POSITION_DECOLLAGE[1]] = new Zone("decollage");
         for (Object[] ind : INDICES) {
-            int[] ip = (int[]) ind[0];
-            int[] pp = (int[]) ind[1];
+            int[] ip = (int[]) ind[0]; //indice position
+            int[] pp = (int[]) ind[1]; //piece position
             grille[ip[0]][ip[1]] = new Zone("indice");
             grille[pp[0]][pp[1]].setPiece((String) ind[2]);
         }
     }
 
     private void placerSableInitial() {
-        // (0,2) excluded — crash site, players start there
         int[][] cases = {{1,1},{1,3},{2,0},{2,4},{3,1},{3,3},{4,2}};
         for (int[] c : cases) {
             ajouterSable(c[0], c[1]);

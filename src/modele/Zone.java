@@ -1,12 +1,12 @@
 package modele;
 
 public class Zone {
-    private int sable;        // amount of sand on this tile
-    private boolean bloquee;  // blocked if sable >= 2
-    private boolean exploree; // whether it's been explored
-    private String type;      // "normale", "oeil", "crash", "decollage", "oasis", "mirage", "tunnel", "indice"
-    private String piece;     // name of machine part on this tile, null if none
-    private boolean pieceRevlee; // whether this part's location has been revealed via a clue
+    private int sable;        
+    private boolean bloquee;  
+    private boolean exploree; 
+    private String type;      
+    private String piece;    
+    private boolean pieceRevlee;
 
     public Zone(String type) {
         this.type = type;
