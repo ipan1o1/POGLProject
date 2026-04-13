@@ -62,10 +62,10 @@ public class Partie {
                 int force = random.nextInt(3) + 1;
                 ventSouffle(dir, force);
                 break;
-            case 1: // heatwave
+            case 1: 
                 vagueDeChaleur();
                 break;
-            case 2: // storm intensifies
+            case 2: 
                 desert.augmenterTempete();
                 break;
         }
