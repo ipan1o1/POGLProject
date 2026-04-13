@@ -23,7 +23,6 @@ public class Joueur {
         this.inventaire = new ArrayList<>();
     }
 
-    // Movement
     public boolean deplacer(int newLigne, int newCol, Desert desert) {
         if (actionsRestantes <= 0) return false;
         Zone cible = desert.getZone(newLigne, newCol);
@@ -34,7 +33,6 @@ public class Joueur {
         return true;
     }
 
-    // Digging
     public boolean creuser(int i, int j, Desert desert) {
         if (actionsRestantes <= 0) return false;
         desert.getZone(i, j).enleverSable();
@@ -50,7 +48,6 @@ public class Joueur {
         eau = Math.min(EAU_MAX, eau + quantite);
     }
 
-    // Explorer action — marks zone as explored, costs 1 action
     public boolean explorer(int i, int j, Desert desert) {
         if (actionsRestantes <= 0) return false;
         desert.getZone(i, j).explorer();
